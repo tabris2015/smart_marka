@@ -100,7 +100,7 @@ class Gateway(object):
                 self.data_buffer = []
                 self.SENDING = False        
     
-    def run(self, serial=False):
+    def run(self, serial=False, online=False):
         """ listen and send a command to serial port for controlling 
             the robot. The commands have the following format:
                 <command> <parameter1> <parameter2>
@@ -108,9 +108,10 @@ class Gateway(object):
                 - baudrate: 57600
         """
         ## create thread
-        send_th = threading.Timer(10, self.send_data)
-        send_th.setDaemon(True)
-        send_th.start()
+        if online:
+            send_th = threading.Timer(10, self.send_data)
+            send_th.setDaemon(True)
+            send_th.start()
 
         while True:
             
@@ -139,9 +140,11 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Escucha y reconoce en aymara.')
     parser.add_argument('-rpi', action='store_true',help='for raspberry pi hardware')
     parser.add_argument('-c', action='store_true',help='continuous recognition')
-
+    parser.add_argument('-online', action='store_true',help='continuous recognition')
     args = parser.parse_args()
+    
     g = Gateway()
     g.register_nodes()
     time.sleep(1)
-    g.run()
+    
+    g.run(args.online)
