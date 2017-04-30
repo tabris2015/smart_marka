@@ -141,7 +141,7 @@ class Gateway(object):
                 data = out.split(' ')
                 if data[0] == 'node':
                     data_dic = {'nodeID':float(data[1]), 'dataIdx':float(data[3]), 'temp':float(data[5]), 'gas':float(data[7]), 'lux':float(data[9])}
-                    if data[1] == '51':
+                    if int(data[1]) <= 99:
                         logging.debug(data_dic)
                     if not self.SENDING:
                         self.data_buffer.append(data_dic)

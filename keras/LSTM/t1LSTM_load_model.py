@@ -159,7 +159,7 @@ if __name__ == '__main__':
 	train_fig, train_ax = plt.subplots()
 	train_ax.plot(training_data)
 	train_ax.plot(testPredictPlot)
-	train_ax.title()
+	train_fig.suptitle(file)
 	
 	train_ax.grid(True)
 	train_fig.savefig(file + '.png')
