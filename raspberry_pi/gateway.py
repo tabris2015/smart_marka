@@ -73,13 +73,19 @@ class Gateway(object):
         url = self.server_url + 'nodes'
         data = {}
         for node in self.nodes:
-            data['name'] = 'test'+node
+            data['name'] = 'test' + node
             data['area'] = 'test_area'
+            data['nodeID'] = float(node)
+            data['sensors'] = ['temp', 'lux', 'gas']
             r = requests.post(url, headers=self.request_header, json=data)
-    
+            if r.status_code == requests.codes.ok:
+                logging.debug('registrado nodo ' + str(node))
+            else:
+                logging.debug('error al registrar nodo ' + str(node))
+
     def send_data(self):
         nodes_sent = 0
-        url = self.server_url + 'data'
+        url = self.server_url + 'sensordata'
         while True:
             if time.time() - self.last_sent_time > self.send_interval:
                 self.last_sent_time = time.time()
@@ -125,7 +131,7 @@ class Gateway(object):
                 logging.debug(out)
                 data = out.split(' ')
                 if data[0] == 'node':
-                    data_dic = {'node':float(data[1]), 'idx':float(data[3]), 'temp':float(data[5]), 'lux':float(data[7]), 'gas':0.0}
+                    data_dic = {'nodeID':float(data[1]), 'dataIdx':float(data[3]), 'temp':float(data[5]), 'lux':float(data[7]), 'gas':0.0}
                     logging.debug(data_dic)
                     if not self.SENDING:
                         self.data_buffer.append(data_dic)
@@ -146,7 +152,7 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     server = args.server
-    
+
     g = Gateway(server_url=server)
     g.register_nodes()
     time.sleep(1)
