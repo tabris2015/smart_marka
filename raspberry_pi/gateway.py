@@ -21,12 +21,13 @@ class Gateway(object):
 
     commands = {}
     #server_url = "http://ggizitim.enjambre.com.bo/storage/"
-    server_url = "http://a4f8d1a8.ngrok.io/storage/"
+    #server_url = "http://a4f8d1a8.ngrok.io/storage/"
+    server_url = "http://2af64eb1.ngrok.io/storage/data"
     nodes = ['default']
     request_header = {'Content-Type': 'application/json'}
     num_nodes = 0
     data_buffer = []
-    def __init__(self, port='/dev/ttyACM0', baud=57600):
+    def __init__(self, port='/dev/ttyACM0', baud=57600, server_url="http://2af64eb1.ngrok.io/storage/data"):
         logging.basicConfig(level=logging.DEBUG, format='(%(threadName)-10s) %(message)s',)
         self.ser = self.connect(port=port)
         if self.ser == None:
@@ -141,9 +142,12 @@ if __name__ == '__main__':
     parser.add_argument('-rpi', action='store_true',help='for raspberry pi hardware')
     parser.add_argument('-c', action='store_true',help='continuous recognition')
     parser.add_argument('-online', action='store_true',help='continuous recognition')
+    parser.add_argument('-server', action='store', type=str, help='url to server')
+
     args = parser.parse_args()
+    server = args.server
     
-    g = Gateway()
+    g = Gateway(server_url=server)
     g.register_nodes()
     time.sleep(1)
     
